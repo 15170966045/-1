@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
-    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="./js/jquery-1.12.4.min.js"></script>
+
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -18,7 +20,7 @@
         <a href="#" class="logo"><img src="images/logo02.png" alt="logo"></a>
         <div class="user_info">
             <img src="images/2.jpg" alt="person">
-            <span>欢迎&nbsp;&nbsp;李思思</span>
+            <span>欢迎&nbsp;&nbsp;<i>李思思</i></span>
             <b>管理员</b>
         </div>
         <div class="menu">
@@ -51,6 +53,37 @@
     <div class="main" id="main_body">
         <iframe src="main_count.html" frameborder="0" id="main_frame" name="main_frame" frameborder="0" scrolling="auto"></iframe>
     </div>
+
+     <!-- 提示框 -->
+     <div class="modal fade modal-logout" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+              <p>你确定要退出</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">
+                我再看看
+              </button>
+              <button type="button" class="btn btn-primary btn-logout">残忍退出</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
 
 
 
@@ -102,7 +135,46 @@
            }
         }
 
+
+       
+
     </script>
 
 </body>
 </html>
+<script>
+    $(function(){
+         // 用户退出
+         $('.icon-tuichu').click(function(){
+            // 提示用户
+            // 确定才调用登出接口
+            $('.modal-logout').modal()
+        })
+        // 点击确定退出
+        $('.btn-logout').click(function(){
+            $.ajax({
+                url:'https://autumnfish.cn/big/admin/logout',
+                type:'post',
+                success:function(backData){
+                    if (backData.code == 200){
+                        //  登出成功
+                        window.location.href='./login.html'
+                    }
+                }
+            })
+        })
+    })
+    // 获取用户数据
+    $.ajax({
+        url:'https://autumnfish.cn/big/admin/getuser',
+        type:'get',
+        success:function(backData){
+            // 修改显示的内容  图片
+            $('.user_info img').attr('src',backData.data.user_pic)
+            $('.user_center_link img').attr('src',backData.data.user_pic)
+            // 名字 原始内容  需要保留 所以选择拼接字符串
+            // 为了精准命中可以认为添加标签
+            $('.user_info span i').html(backData.data.nickname)
+        }
+    })
+</script>
