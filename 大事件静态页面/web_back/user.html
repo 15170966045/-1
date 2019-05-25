@@ -69,11 +69,49 @@
 
 </html>
 <script>
-    $('#exampleInputFile').change(function(e){
-        console.log(this.files[0])
-
-        var url = URL.createObjectURL(this.files[0])
-        $(this).prev('img').attr('src',url)
+    // 获取用户数据
+    $(function(){
+        $.ajax({
+            url:'https://autumnfish.cn/big/admin/userinfo_get',
+            type:'get',
+            success: function(backData) {
+                for (var key in backData.data){
+                    $('input.'+ key + '').val(backData.data[key])
+                }
+                // 单独的设置图片
+                $('.user_pic').attr('src',backData.data.user_pic)
+            }
+        })
+        // change事件 绑定
+             $('#exampleInputFile').change(function(e){
+             console.log(this.files[0])
+             var url = URL.createObjectURL(this.files[0])
+             $(this).prev('img').attr('src',url)
         
     })
+    // 保存按钮的点击事件
+    $('.btn-success').click(function(e){
+        e.preventDefault()
+        // 获取数据
+        var formData = new formData($('.article_form')[0])
+        // ajax
+        $.ajax({
+            url:'https://autumnfish.cn/big/admin/userinfo_edit',
+            type:'post',
+            data:formData,
+            contentType:false,// 不设置请求头 用默认值
+            processData:false,// 不把数据变为 key=value&key2value2
+            success: function(backData){
+                if(backData.code==200){
+                    $('.model').model()
+                    setTimeout(function(){
+                        // js刷新游览器
+                        window.location.reload()
+                    },1000)
+                }
+            }
+        })
+    })
+})
+
 </script>
